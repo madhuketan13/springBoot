@@ -8,14 +8,17 @@ import java.util.Optional;
 
 import javax.naming.InvalidNameException;
 
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 
-public interface AccountRepository {
-    public Account createAccount(Account account);
-
-    public Optional<Account> getAccountById(String accountId) throws InvalidNameException, InvalidDateException;
-
-    public boolean deleteAccountById(String accountId);
-
-    public List<Account> getAllAccounts() throws InvalidNameException, InvalidDateException;
+@Repository
+public interface AccountRepository extends CrudRepository<Account, String>{
+//    public Account createAccount(Account account);
+//
+//    public Optional<Account> getAccountById(String accountId) throws InvalidNameException, InvalidDateException;
+//
+//    public boolean deleteAccountById(String accountId);
+//
+//    public List<Account> getAllAccounts() throws InvalidNameException, InvalidDateException;
 }

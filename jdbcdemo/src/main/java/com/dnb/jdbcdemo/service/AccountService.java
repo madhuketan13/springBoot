@@ -15,7 +15,7 @@ public interface AccountService {
 
     public Optional<Account> getAccountById(String accountId) throws InvalidNameException, InvalidDateException;
 
-    public boolean deleteAccountById(String accountId);
+    public boolean deleteAccountById(String accountId) throws IdNotFoundException;
 
-    public List<Account> getAllAccounts() throws InvalidNameException, InvalidDateException;
+    public Iterable<Account> getAllAccounts() throws InvalidNameException, InvalidDateException;
 }

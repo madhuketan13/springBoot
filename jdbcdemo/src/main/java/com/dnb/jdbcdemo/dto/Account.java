@@ -1,6 +1,7 @@
 package com.dnb.jdbcdemo.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.CustomLog;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,33 +14,79 @@ import java.util.regex.Pattern;
 
 import javax.naming.InvalidNameException;
 
-import com.dnb.jdbcdemo.exceptions.InvalidDateException;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.validator.constraints.Length;
 
-@Getter
+import com.dnb.jdbcdemo.exceptions.InvalidDateException;
+import com.dnb.jdbcdemo.utils.CustomAccountIdGenerator;
+import com.dnb.jdbcdemo.utils.DatePrefixedSequenceIdGenerator;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+
+@Data
 @EqualsAndHashCode
+@NoArgsConstructor
 @ToString(exclude = "customer")
+@Entity
 public class Account {
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_seq")
+	@GenericGenerator(name = "account_seq", strategy = "com.dnb.jdbcdemo.utils.CustomAccountIdGenerator",
+	parameters = {@Parameter(name = CustomAccountIdGenerator.INCREMENT_PARAM, value = "50"),
+	@Parameter(name = CustomAccountIdGenerator.VALUE_PREFIX_PARAMETER, value = "A_"),
+	@Parameter(name = CustomAccountIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%05d")})
+	
+    @Column String accountId;
 	
 	
-    public String accountId;
-    private String accountHolderName;
-    private String accountType;
-    private float balance;
-    private String contactNumber;
-    private String address;
-    private LocalDate accountCreatedDate = LocalDate.now();
-    private LocalDate dob;
-    private boolean accountStatus;
+	@Column(nullable = false)
+	@NotBlank(message = "Account holder name should not be blank")
+	private String accountHolderName;
+	
+	@Column private String accountType;
+	
+	@Min(value = 0, message = "Balance must be more than 0")
+	@Column private float balance;
+	
+	@Column(nullable = false)
+	//@Length(min = 10 , max = 10)
+	@jakarta.validation.constraints.Pattern(regexp = "^[0-9]{10}$",message = "Wrong phoneNumber input")
+	private String contactNumber;
+	
+	@NotBlank(message = "Address should not be blank")
+	@Column private String address;
+	
+	@Column private LocalDate accountCreatedDate = LocalDate.now();
+	
+	@NotNull(message = "Date must be provided")
+	
+	@jakarta.validation.constraints.Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",message = "Wrong phoneNumber input")
+	@Column private String dob;
+ 
+	@Column private boolean accountStatus;
+    
+    @Transient
     private Customer customer;
     
-    public Account(String accountId,String accountHolderName,String accountType,float balance,String contactNumber,String address,LocalDate accountCreatedDate, LocalDate dob, boolean accountStatus,Customer customer) throws InvalidNameException, InvalidDateException
+    
+    public Account(String accountHolderName,String accountType,float balance,String contactNumber,String address,LocalDate accountCreatedDate, String dob, boolean accountStatus) throws InvalidNameException, InvalidDateException
 
 	{
 
 		super();
 
-		this.setAccountId(accountId);
 		this.setAccountHolderName(accountHolderName);
 		this.setAccountCreatedDate(accountCreatedDate);
 		this.setAccountStatus(accountStatus);
@@ -47,65 +94,8 @@ public class Account {
 		this.setAddress(address);
 		this.setBalance(balance);
 		this.setContactNumber(contactNumber);
-		this.setCustomer(customer);
+		//this.setCustomer(customer);
 		this.setDob(dob);
 
 	}
-    
-    
-	public void setAccountId(String accountId) {
-		this.accountId = accountId;
-	}
-	public void setAccountHolderName(String accountHolderName) throws InvalidNameException {
-		
-		String regEx = "^[a-zA-Z]{2,}$";
-		
-		if(Pattern.compile(regEx).matcher(accountHolderName).find()) {
-			this.accountHolderName = accountHolderName;
-		}
-		else {
-			throw new InvalidNameException("Name is invalid");
-		}
-	}
-	
-	public void setAccountType(String accountType) {
-		this.accountType = accountType;
-	}
-	
-	public void setBalance(float balance) {
-		this.balance = balance;
-	}
-	
-	public void setContactNumber(String contactNumber) {
-		this.contactNumber = contactNumber;
-	}
-	
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	
-	public void setAccountCreatedDate(LocalDate accountCreatedDate) {
-		this.accountCreatedDate = accountCreatedDate;
-	}
-	
-	public void setDob(LocalDate dob) throws InvalidDateException {
-		
-		String regEx = "^\\d{4}-\\d{2}-\\d{2}$";
-		if(dob != null && dob.toString().matches(regEx)) {
-			this.dob = dob;
-		}
-		else {
-			throw new InvalidDateException("Invalid Date of birth format");
-		}
-		
-	}
-	
-	public void setAccountStatus(boolean accountStatus) {
-		this.accountStatus = accountStatus;
-	}
-	
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
-
 }
