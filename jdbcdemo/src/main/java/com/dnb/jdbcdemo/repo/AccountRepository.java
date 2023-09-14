@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AccountRepository extends CrudRepository<Account, String>{
+	
+	public Optional<Account> findByContactNumber(String contactNumber);
 //    public Account createAccount(Account account);
 //
 //    public Optional<Account> getAccountById(String accountId) throws InvalidNameException, InvalidDateException;

@@ -18,4 +18,8 @@ public interface AccountService {
     public boolean deleteAccountById(String accountId) throws IdNotFoundException;
 
     public Iterable<Account> getAllAccounts() throws InvalidNameException, InvalidDateException;
+    
+    public boolean existsById(String accountId);
+    
+    public Optional<Account> findByContactNumber(String contactNumber);
 }

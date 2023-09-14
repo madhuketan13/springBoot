@@ -51,6 +51,17 @@ public class AccountServiceImpl implements AccountService{
 		return accountRepository.findAll();
 	}
 
+	@Override
+	public boolean existsById(String accountId) {
+		return accountRepository.existsById(accountId);
+	}
+
+	@Override
+	public Optional<Account> findByContactNumber(String contactNumber) {
+		// TODO Auto-generated method stub
+		return accountRepository.findByContactNumber(contactNumber);
+	}
+
 
    
 }

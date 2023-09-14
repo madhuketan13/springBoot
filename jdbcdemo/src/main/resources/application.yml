@@ -2,7 +2,7 @@ spring:
   datasource:
       username: root
       password: root
-      url: jdbc:mysql://localhost:3306/empms
+      url: jdbc:mysql://localhost:3306/dnb2
   jpa:
       hibernate:
         ddl-auto: update

@@ -72,16 +72,16 @@ public class Account {
 	
 	@NotNull(message = "Date must be provided")
 	
-	@jakarta.validation.constraints.Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",message = "Wrong phoneNumber input")
-	@Column private String dob;
+//	@jakarta.validation.constraints.Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",message = "Wrong dob input")
+	@Column private LocalDate dob;
  
+	@Transient
 	@Column private boolean accountStatus;
+   
+    private int customerId;
     
-    @Transient
-    private Customer customer;
     
-    
-    public Account(String accountHolderName,String accountType,float balance,String contactNumber,String address,LocalDate accountCreatedDate, String dob, boolean accountStatus) throws InvalidNameException, InvalidDateException
+    public Account(String accountHolderName,String accountType,float balance,String contactNumber,String address,LocalDate accountCreatedDate, LocalDate dob, boolean accountStatus) throws InvalidNameException, InvalidDateException
 
 	{
 
